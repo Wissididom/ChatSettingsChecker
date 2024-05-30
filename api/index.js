@@ -61,19 +61,17 @@ app.use(
   }),
 );
 
-app.get("/", async (req, res) => {
-  res.send("Please specify a channel name");
-});
-
-app.get("/:channelName", async (req, res, next) => {
+app.get("/", async (req, res, next) => {
   if (
-    !(req.params && req.params.channelName) ||
-    req.params.channelName == "favicon.ico" ||
-    req.params.channelName == "favicon.png"
-  )
-    next();
+    !(req.query && req.query.channelName) ||
+    req.query.channelName == "favicon.ico" ||
+    req.query.channelName == "favicon.png"
+  ) {
+    res.send("Please specify a channelName!");
+    return;
+  }
   let token = await getToken();
-  let userId = (await getUser(token, req.params.channelName.toLowerCase())).id;
+  let userId = (await getUser(token, req.query.channelName.toLowerCase())).id;
   let chatSettings = await getChatSettings(token, userId);
   if (chatSettings.data && chatSettings.data.length > 0) {
     let data = chatSettings.data[0];
