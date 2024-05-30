@@ -67,7 +67,7 @@ app.get("/", async (req, res) => {
 
 app.get("/:channelName", async (req, res, next) => {
   if (
-    !req.params.channelName ||
+    !(req.params && req.params.channelName) ||
     req.params.channelName == "favicon.ico" ||
     req.params.channelName == "favicon.png"
   )
