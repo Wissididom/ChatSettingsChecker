@@ -66,7 +66,7 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/:channelName", async (req, res, next) => {
-  if (!req.params.channelName || req.params.channelName == "favicon.ico")
+  if (!req.params.channelName || req.params.channelName == "favicon.ico" || req.params.channelName == "favicon.png")
     next();
   let token = await getToken();
   let userId = (await getUser(token, req.params.channelName.toLowerCase())).id;
