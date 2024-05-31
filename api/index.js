@@ -71,7 +71,11 @@ app.get("/", async (req, res, next) => {
     return;
   }
   let token = await getToken();
-  let userId = (await getUser(token, req.query.channelName.toLowerCase())).id;
+  let user = await getUser(
+    token,
+    req.query.channelName.toLowerCase().replace(/@/g, ""),
+  );
+  let userId = user.id;
   let chatSettings = await getChatSettings(token, userId);
   if (chatSettings.data && chatSettings.data.length > 0) {
     let data = chatSettings.data[0];
