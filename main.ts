@@ -1,9 +1,7 @@
-import "dotenv/config";
-import express from "express";
-import helmet from "helmet";
+import { Hono } from "hono";
 import { getUser as getUserImpl } from "./utils.ts";
 
-const app = express();
+const app = new Hono();
 
 async function getChatSettings(token, broadcasterId, moderatorId = null) {
   let url = `https://api.twitch.tv/helix/chat/settings?broadcaster_id=${broadcasterId}`;
@@ -53,28 +51,16 @@ async function getToken() {
   return null;
 }
 
-app.use(helmet());
-
-app.use(
-  express.raw({
-    type: "application/json",
-  }),
-);
-
-app.get("/", async (req, res, next) => {
-  if (
-    !(req.query && req.query.channelName) ||
-    req.query.channelName == "favicon.ico" ||
-    req.query.channelName == "favicon.png"
-  ) {
-    res.send("Please specify a channelName!");
-    return;
+app.get("/", async (c) => {
+  const { channelName } = c.req.query();
+  if (!channelName || channelName == "favicon.ico" || channelName == "favicon.png") {
+    return c.text("Please specify a channelName!");
   }
   let token = await getToken();
-  let user = await getUser(
-    token,
-    req.query.channelName.toLowerCase().replace(/@/g, ""),
-  );
+  let user = await getUser(token, channelName.toLowerCase().replace(/@/g, ""));
+  if (!user) {
+  	return c.text("channel not found!");
+  }
   let userId = user.id;
   let chatSettings = await getChatSettings(token, userId);
   if (chatSettings.data && chatSettings.data.length > 0) {
@@ -99,17 +85,15 @@ app.get("/", async (req, res, next) => {
       modes.push(`unique-chat-mode enabled`);
     }
     if (modes.length > 0) {
-      res.send(modes.join(" | "));
+      return c.text(modes.join(" | "));
     } else {
-      res.send("All good, no restrictions detected!");
+      return c.text("All good, no restrictions detected!");
     }
   } else {
-    res.send("Failed to get chat settings!");
+    return c.text("Failed to get chat settings!");
   }
 });
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => console.log(`Server ready on port ${port}.`));
-
-export default app;
+Deno.serve({ port }, app.fetch);

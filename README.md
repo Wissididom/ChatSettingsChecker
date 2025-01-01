@@ -10,6 +10,6 @@
 ## Setup
 
 1. Clone this repo
-2. Do `npm i` or `npm install` to install `dotenv`, `express` and `helmet`
+2. Do `deno install` to install `hono`
 3. Copy `example.env` to `.env` and fill out it's values
-4. Run `node index.js` or `npm start` and let it run in the background (Twitch sends a verification request after creating the EventSub subscription)
+4. Run `deno task start` and let it run in the background (Twitch sends a verification request after creating the EventSub subscription)
