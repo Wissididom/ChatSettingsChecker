@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { getUser as getUserImpl } from "./utils.ts";
-import process from "node:process";
 
 const app = new Hono();
 
@@ -18,7 +17,7 @@ async function getChatSettings(
     method: "GET",
     headers: {
       Authorization: `Bearer ${token.access_token}`,
-      "Client-ID": process.env.TWITCH_CLIENT_ID,
+      "Client-ID": Deno.env.get("TWITCH_CLIENT_ID") ?? "",
       "Content-Type": "application/json",
     },
   }).then(async (res) => {
@@ -35,7 +34,7 @@ async function getChatSettings(
 
 async function getUser(token: { access_token: string }, login: string) {
   return await getUserImpl(
-    process.env.TWITCH_CLIENT_ID,
+    Deno.env.get("TWITCH_CLIENT_ID") ?? "",
     token.access_token,
     login,
   );
@@ -43,7 +42,11 @@ async function getUser(token: { access_token: string }, login: string) {
 
 async function getToken() {
   const clientCredentials = await fetch(
-    `https://id.twitch.tv/oauth2/token?client_id=${process.env.TWITCH_CLIENT_ID}&client_secret=${process.env.TWITCH_CLIENT_SECRET}&grant_type=client_credentials`,
+    `https://id.twitch.tv/oauth2/token?client_id=${
+      Deno.env.get("TWITCH_CLIENT_ID") ?? ""
+    }&client_secret=${
+      Deno.env.get("TWITCH_CLIENT_SECRET") ?? ""
+    }&grant_type=client_credentials`,
     {
       method: "POST",
     },
@@ -69,6 +72,9 @@ app.get("/", async (c) => {
     return c.text("Please specify a channelName!");
   }
   const token = await getToken();
+  if (!token) {
+    return c.text("error getting token from twitch!");
+  }
   const user = await getUser(
     token,
     channelName.toLowerCase().replace(/@/g, ""),
@@ -108,6 +114,6 @@ app.get("/", async (c) => {
   }
 });
 
-const port = process.env.PORT || 3000;
+const port = parseInt(Deno.env.get("PORT") ?? "3000");
 
 Deno.serve({ port }, app.fetch);

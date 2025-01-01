@@ -32,14 +32,14 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         uses: actions/upload-artifact@v4
         with:
-          name: chatsettingschecker-${{ matrix.os }}
-          path: chatsettingschecker.exe
+          name: ChatSettingsChecker-${{ matrix.os }}
+          path: ChatSettingsChecker.exe
       - name: Upload artifact (Ubuntu and Mac)
         if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
         uses: actions/upload-artifact@v4
         with:
-          name: chatsettingschecker-${{ matrix.os }}
-          path: chatsettingschecker
+          name: ChatSettingsChecker-${{ matrix.os }}
+          path: ChatSettingsChecker
   create-release:
     needs: [build]
     runs-on: ubuntu-latest
@@ -53,29 +53,29 @@ jobs:
       - uses: actions/download-artifact@v4
         name: Download Windows
         with:
-          name: chatsettingschecker-windows-latest
+          name: ChatSettingsChecker-windows-latest
           path: release-artifacts/
 
       - name: Rename Windows Binary
-        run: mv release-artifacts/chatsettingschecker.exe release-artifacts/chatsettingschecker-Windows.exe
+        run: mv release-artifacts/ChatSettingsChecker.exe release-artifacts/ChatSettingsChecker-Windows.exe
 
       - uses: actions/download-artifact@v4
         name: Download Linux
         with:
-          name: chatsettingschecker-ubuntu-latest
+          name: ChatSettingsChecker-ubuntu-latest
           path: release-artifacts/
 
       - name: Rename Linux Binary
-        run: mv release-artifacts/chatsettingschecker release-artifacts/chatsettingschecker-Linux
+        run: mv release-artifacts/ChatSettingsChecker release-artifacts/ChatSettingsChecker-Linux
 
       - uses: actions/download-artifact@v4
         name: Download Mac
         with:
-          name: chatsettingschecker-macos-latest
+          name: ChatSettingsChecker-macos-latest
           path: release-artifacts/
 
       - name: Rename Mac Binary
-        run: mv release-artifacts/chatsettingschecker release-artifacts/chatsettingschecker-Mac
+        run: mv release-artifacts/ChatSettingsChecker release-artifacts/ChatSettingsChecker-Mac
 
       - name: Create release
         uses: ncipollo/release-action@v1.14.0
