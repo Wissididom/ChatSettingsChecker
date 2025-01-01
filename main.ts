@@ -1,9 +1,14 @@
 import { Hono } from "hono";
 import { getUser as getUserImpl } from "./utils.ts";
+import process from "node:process";
 
 const app = new Hono();
 
-async function getChatSettings(token, broadcasterId, moderatorId = null) {
+async function getChatSettings(
+  token: { access_token: string },
+  broadcasterId: string,
+  moderatorId: string | undefined | null = null,
+) {
   let url =
     `https://api.twitch.tv/helix/chat/settings?broadcaster_id=${broadcasterId}`;
   if (moderatorId) {
@@ -20,7 +25,7 @@ async function getChatSettings(token, broadcasterId, moderatorId = null) {
     // 200 OK = Successfully sent the message
     // 400 Bad Request
     // 401 Unauthorized
-    let json = await res.json();
+    const json = await res.json();
     console.log(
       `${broadcasterId} - ${res.status}:\n${JSON.stringify(json, null, 2)}`,
     );
@@ -28,20 +33,24 @@ async function getChatSettings(token, broadcasterId, moderatorId = null) {
   });
 }
 
-async function getUser(token, login) {
-  return getUserImpl(process.env.TWITCH_CLIENT_ID, token.access_token, login);
+async function getUser(token: { access_token: string }, login: string) {
+  return await getUserImpl(
+    process.env.TWITCH_CLIENT_ID,
+    token.access_token,
+    login,
+  );
 }
 
 async function getToken() {
-  let clientCredentials = await fetch(
+  const clientCredentials = await fetch(
     `https://id.twitch.tv/oauth2/token?client_id=${process.env.TWITCH_CLIENT_ID}&client_secret=${process.env.TWITCH_CLIENT_SECRET}&grant_type=client_credentials`,
     {
       method: "POST",
     },
   );
-  let clientCredentialsJson = await clientCredentials.json();
+  const clientCredentialsJson = await clientCredentials.json();
   if (clientCredentials.status >= 200 && clientCredentials.status < 300) {
-    let token = {
+    const token = {
       access_token: clientCredentialsJson.access_token,
       expires_in: clientCredentialsJson.expires_in,
       token_type: clientCredentialsJson.token_type,
@@ -59,16 +68,18 @@ app.get("/", async (c) => {
   ) {
     return c.text("Please specify a channelName!");
   }
-  let token = await getToken();
-  let user = await getUser(token, channelName.toLowerCase().replace(/@/g, ""));
+  const token = await getToken();
+  const user = await getUser(
+    token,
+    channelName.toLowerCase().replace(/@/g, ""),
+  );
   if (!user) {
     return c.text("channel not found!");
   }
-  let userId = user.id;
-  let chatSettings = await getChatSettings(token, userId);
+  const chatSettings = await getChatSettings(token, user.id);
   if (chatSettings.data && chatSettings.data.length > 0) {
-    let data = chatSettings.data[0];
-    let modes = [];
+    const data = chatSettings.data[0];
+    const modes = [];
     if (data.emote_mode) {
       modes.push(`emote-only-mode enabled`);
     }
