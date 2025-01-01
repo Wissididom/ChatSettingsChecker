@@ -6,7 +6,8 @@ import { getUser as getUserImpl } from "./utils.ts";
 const app = express();
 
 async function getChatSettings(token, broadcasterId, moderatorId = null) {
-  let url = `https://api.twitch.tv/helix/chat/settings?broadcaster_id=${broadcasterId}`;
+  let url =
+    `https://api.twitch.tv/helix/chat/settings?broadcaster_id=${broadcasterId}`;
   if (moderatorId) {
     url += `&moderator_id=${moderatorId}`;
   }

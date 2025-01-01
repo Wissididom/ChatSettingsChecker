@@ -4,7 +4,8 @@ import { getUser as getUserImpl } from "./utils.ts";
 const app = new Hono();
 
 async function getChatSettings(token, broadcasterId, moderatorId = null) {
-  let url = `https://api.twitch.tv/helix/chat/settings?broadcaster_id=${broadcasterId}`;
+  let url =
+    `https://api.twitch.tv/helix/chat/settings?broadcaster_id=${broadcasterId}`;
   if (moderatorId) {
     url += `&moderator_id=${moderatorId}`;
   }
@@ -53,13 +54,15 @@ async function getToken() {
 
 app.get("/", async (c) => {
   const { channelName } = c.req.query();
-  if (!channelName || channelName == "favicon.ico" || channelName == "favicon.png") {
+  if (
+    !channelName || channelName == "favicon.ico" || channelName == "favicon.png"
+  ) {
     return c.text("Please specify a channelName!");
   }
   let token = await getToken();
   let user = await getUser(token, channelName.toLowerCase().replace(/@/g, ""));
   if (!user) {
-  	return c.text("channel not found!");
+    return c.text("channel not found!");
   }
   let userId = user.id;
   let chatSettings = await getChatSettings(token, userId);
