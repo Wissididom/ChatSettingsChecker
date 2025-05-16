@@ -1,4 +1,4 @@
-FROM denoland/deno:2.3.1
+FROM denoland/deno:2.3.2
 EXPOSE 3000
 WORKDIR /app
 USER deno
