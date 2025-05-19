@@ -1,10 +1,8 @@
 FROM denoland/deno:2.3.3
 EXPOSE 3000
 WORKDIR /app
-USER deno
-COPY deno.json .
-COPY deno.lock .
-RUN deno install
 COPY . .
+RUN deno install
 RUN deno cache main.ts
+USER deno
 CMD ["run", "-EN", "main.ts"]
