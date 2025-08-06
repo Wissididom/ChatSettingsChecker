@@ -50,7 +50,7 @@ jobs:
         name: Checkout Code
 
       # Windows
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         name: Download Windows
         with:
           name: ChatSettingsChecker-windows-latest
@@ -59,7 +59,7 @@ jobs:
       - name: Rename Windows Binary
         run: mv release-artifacts/ChatSettingsChecker.exe release-artifacts/ChatSettingsChecker-Windows.exe
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         name: Download Linux
         with:
           name: ChatSettingsChecker-ubuntu-latest
@@ -68,7 +68,7 @@ jobs:
       - name: Rename Linux Binary
         run: mv release-artifacts/ChatSettingsChecker release-artifacts/ChatSettingsChecker-Linux
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         name: Download Mac
         with:
           name: ChatSettingsChecker-macos-latest
