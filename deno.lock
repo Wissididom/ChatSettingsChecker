@@ -1,12 +1,12 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@hono/hono@^4.11.7": "4.11.7",
+    "jsr:@hono/hono@^4.12.5": "4.12.5",
     "npm:@types/node@*": "22.15.15"
   },
   "jsr": {
-    "@hono/hono@4.11.7": {
-      "integrity": "2a0dc00088fbef98b76f575e3c4ab3d2c770d5e6095be215ae05c2aef25b363a"
+    "@hono/hono@4.12.5": {
+      "integrity": "16e6ac6d6ab65c3d08fa4c019c3d9236389044074f3932bf0922fcb582e530c6"
     }
   },
   "npm": {
@@ -22,7 +22,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@hono/hono@^4.11.7"
+      "jsr:@hono/hono@^4.12.5"
     ]
   }
 }
