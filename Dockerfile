@@ -1,4 +1,4 @@
-FROM denoland/deno:2.7.10
+FROM denoland/deno:2.7.11
 EXPOSE 3000
 WORKDIR /app
 COPY . .
