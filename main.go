@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -212,6 +213,8 @@ func handleRoot(c echo.Context) error {
 }
 
 func main() {
+	_ = godotenv.Load()
+
 	e := echo.New()
 
 	e.Use(middleware.Logger())
