@@ -1,4 +1,5 @@
-name: Deno Build
+name: Go Build
+
 permissions:
   "contents": "write"
 
@@ -15,31 +16,27 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        include:
+          - os: ubuntu-latest
+            output: ChatSettingsChecker
+          - os: macos-latest
+            output: ChatSettingsChecker
+          - os: windows-latest
+            output: ChatSettingsChecker.exe
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
+      - name: Setup Go
+        uses: actions/setup-go@v6
         with:
-          deno-version: v2.x
-      - name: Install dependencies
-        run: |
-          deno install
-      - name: Compile
-        run: |
-          deno compile -EN main.ts
-      - name: Upload artifact (Windows)
-        if: startsWith(matrix.os, 'windows')
+          go-version: "1.26.3"
+      - name: Build
+        run: go build -o ${{ matrix.output }} .
+      - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: ChatSettingsChecker-${{ matrix.os }}
-          path: ChatSettingsChecker.exe
-      - name: Upload artifact (Ubuntu and Mac)
-        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
-        uses: actions/upload-artifact@v7
-        with:
-          name: ChatSettingsChecker-${{ matrix.os }}
-          path: ChatSettingsChecker
+          path: ${{ matrix.output }}
   create-release:
     needs: [build]
     runs-on: ubuntu-latest

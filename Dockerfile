@@ -1,8 +1,13 @@
-FROM denoland/deno:2.8.0
-EXPOSE 3000
+FROM golang:1.26-alpine AS builder
 WORKDIR /app
+COPY go.mod go.sum* ./
+RUN go mod download
 COPY . .
-RUN deno install
-RUN deno cache main.ts
-USER deno
-CMD ["run", "-EN", "main.ts"]
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o chat-settings-checker main.go
+
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /app/chat-settings-checker .
+EXPOSE 3000
+CMD ["./chat-settings-checker"]
