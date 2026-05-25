@@ -1,4 +1,8 @@
-# Twitch Chat Settings API (Go)
+# Archived
+
+Please consider using https://github.com/Wissididom/WissididomApi instead.
+
+# Twitch Chat Settings API
 
 A Go application that fetches Twitch chat settings for a specified channel.
 
