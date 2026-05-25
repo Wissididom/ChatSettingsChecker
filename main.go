@@ -21,16 +21,16 @@ type Token struct {
 }
 
 type ChatSettingsData struct {
-	BroadcasterID          string `json:"broadcaster_id"`
-	EmoteMode              bool   `json:"emote_mode"`
-	FollowerMode           bool   `json:"follower_mode"`
-	FollowerModeDuration   int    `json:"follower_mode_duration"`
-	SlowMode               bool   `json:"slow_mode"`
-	SlowModeWaitTime       int    `json:"slow_mode_wait_time"`
-	SubscriberMode         bool   `json:"subscriber_mode"`
-	UniqueChatMode         bool   `json:"unique_chat_mode"`
-	NonModeratorChatDelay  bool   `json:"non_moderator_chat_delay"`
-	NonModeratorChatDelayMS int   `json:"non_moderator_chat_delay_ms"`
+	BroadcasterID           string `json:"broadcaster_id"`
+	EmoteMode               bool   `json:"emote_mode"`
+	FollowerMode            bool   `json:"follower_mode"`
+	FollowerModeDuration    int    `json:"follower_mode_duration"`
+	SlowMode                bool   `json:"slow_mode"`
+	SlowModeWaitTime        int    `json:"slow_mode_wait_time"`
+	SubscriberMode          bool   `json:"subscriber_mode"`
+	UniqueChatMode          bool   `json:"unique_chat_mode"`
+	NonModeratorChatDelay   bool   `json:"non_moderator_chat_delay"`
+	NonModeratorChatDelayMS int    `json:"non_moderator_chat_delay_ms"`
 }
 
 type ChatSettingsResponse struct {
