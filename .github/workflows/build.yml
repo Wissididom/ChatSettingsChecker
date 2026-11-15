@@ -1,7 +1,7 @@
 name: Go Build
 
 permissions:
-  "contents": "write"
+  contents: "read"
 
 on:
   push:
@@ -25,29 +25,36 @@ jobs:
             output: ChatSettingsChecker.exe
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
       - name: Setup Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
         with:
           go-version: "1.26.3"
       - name: Build
         run: go build -o ${{ matrix.output }} .
       - name: Upload artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ChatSettingsChecker-${{ matrix.os }}
           path: ${{ matrix.output }}
   create-release:
     needs: [build]
+    permissions:
+      contents: "write"
     runs-on: ubuntu-latest
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         name: Checkout Code
+        with:
+          fetch-depth: 0 # allows for tags access
+          persist-credentials: true # Required to update the nightly-build tag.
 
       # Windows
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         name: Download Windows
         with:
           name: ChatSettingsChecker-windows-latest
@@ -56,7 +63,7 @@ jobs:
       - name: Rename Windows Binary
         run: mv release-artifacts/ChatSettingsChecker.exe release-artifacts/ChatSettingsChecker-Windows.exe
 
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         name: Download Linux
         with:
           name: ChatSettingsChecker-ubuntu-latest
@@ -65,7 +72,7 @@ jobs:
       - name: Rename Linux Binary
         run: mv release-artifacts/ChatSettingsChecker release-artifacts/ChatSettingsChecker-Linux
 
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         name: Download Mac
         with:
           name: ChatSettingsChecker-macos-latest
@@ -75,7 +82,7 @@ jobs:
         run: mv release-artifacts/ChatSettingsChecker release-artifacts/ChatSettingsChecker-Mac
 
       - name: Create release
-        uses: ncipollo/release-action@v1.21.0
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
         with:
           replacesArtifacts: true
           allowUpdates: true
